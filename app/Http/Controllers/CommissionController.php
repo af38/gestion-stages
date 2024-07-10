@@ -30,7 +30,7 @@ class CommissionController extends Controller
      */
     public function store(Request $request){
         try{
-            return $this->commission->create($request -> all());
+            $this->commission->create($request -> all());
             return response()->json([
                 'status' => true,
                 'message' => "La commission a été créée avec succès",

@@ -119,7 +119,7 @@ class OrganismeController extends Controller
             ], 200);
         }catch(Throwable $e){
             return response()->json([
-                'message' => "quelque chose s'est mal passé :" . $e,
+                'message' => "quelque chose s'est mal passé",
               ], 500);
         }
     }

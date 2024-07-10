@@ -84,7 +84,7 @@ class StageController extends Controller
               ], 200);
         }catch(Throwable $e){
             return response()->json([
-                'message' => "quelque chose s'est mal passé :" . $e,
+                'message' => "quelque chose s'est mal passé",
               ], 500);
         }
     }
@@ -94,7 +94,17 @@ class StageController extends Controller
      */
     public function destroy(string $id){
         $stage = $this->stage->find($id);
-        return $stage->delete();
+        try{
+            $stage->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Le stage a été supprimé avec succès',
+              ], 200);
+        }catch(Throwable $e){
+            return response()->json([
+                'message' => "quelque chose s'est mal passé",
+              ], 500);
+        }
     }
 
     public function affectation(Request $request){
@@ -185,7 +195,7 @@ class StageController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => "stage n'est pas trouve",
-                    'stage' => [],
+                    'stage' => null,
                 ], 200);
             }
         }catch(Throwable $e){

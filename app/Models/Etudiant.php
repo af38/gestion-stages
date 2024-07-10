@@ -10,8 +10,8 @@ class Etudiant extends Model
     protected $table = 'etudiant';
     protected $primaryKey = 'idEtudiant';
     public $timestamps = false;
+    public $incrementing = false;
     protected $fillable = [
-        'idStage',
         'dateNaissance',
         'filiere',
         'niveauEtude',
