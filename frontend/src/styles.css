@@ -1,0 +1,52 @@
+/* You can add global styles to this file, and also import other style files */
+/* primeng */
+@layer tailwind-base, primeng, tailwind-utilities;
+
+
+
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+/* primeng icons */
+@import "primeicons/primeicons.css";
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+
+@layer tailwind-base {
+    @tailwind base;
+}
+
+@layer tailwind-utilities {
+    @tailwind components;
+    @tailwind utilities;
+}
+
+.p-button {
+    /* background-color: rgb(29 78 216) !important;  Primary color */
+    /* border: none !important; */
+    /* color: #fff !important;  Text color */
+    font-weight: 500 !important;
+    /* border-radius: 0.5rem !important; */
+    /* padding: 0.625rem 1.25rem !important; */
+    outline: 2px solid transparent !important;
+    outline-offset: 2px !important;
+  }
+  .p-button-icon-only{
+    height: 2rem;
+    width: 2rem;
+  }
+
+  ::ng-deep .ngx-pagination  .ng-star-inserted{
+  border-radius: 50%;
+}
+.p-stepper-action{
+  background: #f3f4f6;
+}
+.p-accordion.p-component{
+  border: 1px solid rgb(107 114 128);
+}
+

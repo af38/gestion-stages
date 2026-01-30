@@ -1,0 +1,9 @@
+<nav class="py-4 px-8 fixed w-full flex justify-start items-center gap-4 bg-white h-[64px] z-50 shadow-sm">
+
+    <i (click)="toggleSideBar()" class="pi pi-bars font-medium text-xl mr-4 cursor-pointer"></i>
+    @if(etablissement){
+        <img class=" max-h-12 min-h-4" [src]="'../../../../../assets/' + etablissement.logo" alt="etablissment logo">
+    }@else{
+        <img class=" max-h-12 min-h-4" [src]="" alt="etablissment logo">
+    }
+</nav>

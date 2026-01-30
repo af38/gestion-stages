@@ -1,0 +1,7 @@
+:host ::ng-deep .p-chips {
+    height: 41px;
+  }
+
+  :host ::ng-deep .p-chips-token{
+    padding: 3px;
+  }

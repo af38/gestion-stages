@@ -1,0 +1,85 @@
+<div class="flex justify-between items-center mb-4">
+    <select [(ngModel)]="filiere" (ngModelChange)="getStudents()" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5" type="text">
+        <option value="" selected>Filière</option>
+        <option *ngFor="let filiere of uniqueFilieres" [value]="filiere">{{filiere}}</option>
+    </select>
+    <input [(ngModel)]="query" (ngModelChange)="getStudents()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+</div>
+
+<table class="w-full text-sm text-left  text-black shadow-md">
+    <thead class="text-xs uppercase bg-gray-200">
+        <tr>
+            <th scope="col" class="px-6 py-3">nom</th>
+            <th scope="col" class="px-6 py-3">prenom</th>
+            <th scope="col" class="px-6 py-3">CNE</th>
+            <th scope="col" class="px-6 py-3">filier</th>
+            <th scope="col" class="px-6 py-3">niveau d'étude</th>
+            <th scope="col" class="px-6 py-3">stage</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr *ngFor="let student of students | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }"  class="bg-white border-b">
+            <td class="px-6 py-4">{{student.utilisateur.nom}}</td>
+            <td class="px-6 py-4">{{student.utilisateur.prenom}}</td>
+            <td class="px-6 py-4">{{student.cne}}</td>
+            <td class="px-6 py-4">{{student.filiere}}</td>
+            <td class="px-6 py-4">{{student.niveauEtude}}</td>
+            <td class="px-6 py-4">
+                @if(membershipStatus[student.idEtudiant]){
+                    <button type="button" (click)="disaffecter(student.idEtudiant)" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">désaffecter</button>
+                }@else{
+                    <a [routerLink]="'/affectation'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ">affecter</a>
+
+                }
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+    <!-- start pagination -->
+    <div class="pagination text-center mt-4">
+        <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="précédent"
+            nextLabel="suivant">
+        </pagination-controls>
+    </div>
+        <!-- end pagination -->
+
+<!-- delete confirmation modal -->
+<p-toast></p-toast>
+<p-confirmDialog #cd>
+    <ng-template pTemplate="headless" let-message>
+        <div class="flex flex-col gap-4 items-center p-5  rounded-lg bg-white">
+            <div class="rounded-full bg-red-600 inline-flex justify-center items-center h-24 w-24">
+                <i class="pi pi-question text-5xl text-white"></i>
+            </div>
+
+            <span class="font-bold text-2xl block mb-2 mt-4">
+                {{ message.header }}
+            </span>
+
+            <p class="mb-0">{{ message.message }}</p>
+
+            <div class=" w-full flex items-center gap-2 mt-4">
+                <button
+                    pButton
+                    label="disaffecter"
+                    (click)="cd.accept()"
+                    size="small"
+                    [outlined]="true"
+                    severity="danger"
+                    class="w-32">
+                </button>
+                <button
+                    pButton
+                    label="Annuler"
+                    (click)="cd.reject()"
+                    size="small"
+                    class="w-32 ">
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmDialog>

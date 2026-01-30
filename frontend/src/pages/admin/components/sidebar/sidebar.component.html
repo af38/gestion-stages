@@ -1,0 +1,33 @@
+
+<aside  [ngClass]="{'show': isOpen, 'hide': !isOpen}" class="flex flex-col  fixed left-0 top-16 h-full w-64 bg-cyan-950 z-50">
+    <div class="flex items-center flex-col grow p-6 h-full">
+        <!-- <img src="https://placehold.co/40x40" alt="admin-pfp" class="w-20 h-20 rounded-full object-cover"> -->
+        <img class = "w-20 h-20 rounded-full object-cover" src="../../../../../assets/user.jpg" alt="">
+        <span *ngIf="user" class="text-lg font-bold text-gray-100 ml-3" >
+            {{user.nom + ' ' + user.prenom}}
+        </span>
+
+        <ul class="mt-4 w-full flex flex-col justify-between">
+
+            <li *ngFor="let item of items" class="mb-1 text-left flex items-center">
+                <i [ngClass]="'pi ' + item.icon" class="text-white mr-3"></i>
+                <a [routerLink]="item.link" routerLinkActive="active" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+                    <span>{{item.label}}</span>
+                </a>
+            </li>
+
+
+
+        </ul>
+
+        <ul class="mt-auto mb-14">
+            <li class="mt-auto mb-1 text-left flex items-center">
+                <i ngClass="pi pi-sign-out" class="text-white mr-3"></i>
+                <a (click)="logout()" class="cursor-pointer flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md">
+                    <span class="text-left">Deconnexion</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</aside>

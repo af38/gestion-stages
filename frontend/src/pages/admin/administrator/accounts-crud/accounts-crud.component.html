@@ -1,0 +1,23 @@
+
+    <!-- start account-creation-form -->
+    <section  class="p-4 ">
+        <div class="rounded-xl p-4 border border-gray-300 bg-white">
+            <div class="flex items-center justify-start">
+                <select [(ngModel)]="tabelType" name="tabelType" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5">
+                    <option value="student" name="student"  selected>etudiant</option>
+                    <option value="teacher" name="teacher" >enseignant</option>
+                    <option value="resp" name="resp">responsable</option>
+                </select>
+            </div>
+            <div *ngIf="tabelType === 'student'">
+                <app-student-crud-table></app-student-crud-table>
+            </div>
+            <div *ngIf="tabelType === 'teacher'">
+                <app-teacher-crud-table></app-teacher-crud-table>
+            </div>
+            <div *ngIf="tabelType === 'resp'">
+                <app-resp-crud-table></app-resp-crud-table>
+            </div>
+        </div>
+    </section>
+    <!-- end account-creation-form -->

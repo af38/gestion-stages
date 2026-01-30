@@ -1,0 +1,10 @@
+.list-cont{
+    padding: 1rem;
+    background-color: #fff;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+}
+
+.selectedClass{
+    background-color: #32112;
+}

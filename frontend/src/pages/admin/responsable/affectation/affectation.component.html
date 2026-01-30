@@ -1,0 +1,240 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-full pt-16 overflow-y-scroll">
+
+    <section class="py-4 px-8 mt-4 md:h-full">
+        <div class="rounded-xl mt-4">
+            <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+                <i class="pi pi-user-plus text-gray-500 border border-solid border-black shadow-lg rounded-lg text-3xl p-2 "></i>
+                <h2 class="mb-2 text-3xl">Affectation des étudiants</h2>
+            </div>
+
+            <p-stepper [linear]="true">
+                <p-stepperPanel header="choisir stage">
+                    <!-- list stages -->
+                    <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
+                        <div class="list-cont">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <select [(ngModel)]="search_organisme" (ngModelChange)="getAllStages()" class="block w-1/3  p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+                                        <option [value]="0">organisme</option>
+                                        <option *ngFor="let organisation of organismes" [value]="organisation.idOrganisme">{{organisation.nomOrganisme}}</option>
+                                    </select>
+                                    <input [(ngModel)]="query" (ngModelChange)="getAllStages()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+                                </div>
+                            </div>
+
+                            <div class="flex justify-start text-xl font-bold text-sky-700">
+                                <h3>sélectionnez une stage</h3>
+                            </div>
+                            <div class="flex flex-col justify-between min-h-80 relative overflow-x-auto mt-4 rounded-lg">
+                                <table class="w-full text-sm text-left rtl:text-right text-black shadow-md">
+                                    <thead class="text-xs uppercase bg-gray-200">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">Intitulé</th>
+                                            <th scope="col" class="px-6 py-3">organisme</th>
+                                            <th scope="col" class="px-6 py-3">Date de début</th>
+                                            <th scope="col" class="px-6 py-3">date de fin</th>
+                                            <th scope="col" class="px-6 py-3">Nombre de stagiaires</th>
+                                            <th scope="col" class="px-6 py-3">spécialité</th>
+                                            <th scope="col" class="px-6 py-3">sélectionner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr *ngFor="let stage of stages | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }" (click) = "selectStage(stage)"  class="bg-white border-b">
+                                            <td class="px-6 py-4">{{stage.intitule}}</td>
+                                            <td class="px-6 py-4">{{stage.organisme.nomOrganisme}}</td>
+                                            <td class="px-6 py-4">{{stage.dateDebut}}</td>
+                                            <td class="px-6 py-4">{{stage.dateFin}}</td>
+                                            <td class="px-6 py-4">{{stage.nbreStagaires}}</td>
+                                            <td class="px-6 py-4">{{stage.specialite}}</td>
+                                            <td class="px-6 py-4">
+                                                <input [(ngModel)]="selectedStageRadio" [value]="stage" type="radio" >
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <!-- start pagination -->
+                                <div class="pagination text-center mt-4">
+                                    <pagination-controls
+                                        (pageChange)="page = $event"
+                                        previousLabel="précédent"
+                                        nextLabel="suivant">
+                                    </pagination-controls>
+                                </div>
+                                <!-- end pagination -->
+                            </div>
+
+                        </div>
+                        <div class="flex px-4 justify-content-end">
+                            <p-button
+                                size="small"
+                                [disabled] = "!selectedStageRadio"
+                                label="suivant"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                                (onClick)="nextCallback.emit()" />
+                        </div>
+                    </ng-template>
+                    <!-- end list stages -->
+                </p-stepperPanel>
+
+                <p-stepperPanel header="choisir etudiant(s)">
+                    <!-- list etudiant -->
+                    <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+                        <div class="list-cont">
+                            <div class="flex justify-between items-center mb-2">
+                                <select [(ngModel)]="filiere" (ngModelChange)="getAllStudents()" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5" type="text">
+                                    <option value="" selected>Filière</option>
+                                    <option *ngFor="let filiere of uniqueFilieres" [value]="filiere">{{filiere}}</option>
+                                </select>
+                                <input [(ngModel)]="student_query" (ngModelChange)="getAllStudents()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+                            </div>
+
+                            @if(selectedStageRadio){
+                                <div class="flex justify-start text-xl font-bold text-sky-700">
+                                    <h3>sélectionnez  <span class="text-red-700"> {{' ' + nombreStagairesPossible + ' '}} </span> etudiant(s) ou moins</h3>
+                                </div>
+                            }
+                            <div class=" flex flex-col justify-between relative overflow-x-auto rounded-lg mt-4 min-h-80 ">
+                                <table class="w-full text-sm text-left rtl:text-right text-black shadow-md">
+                                    <thead class="text-xs uppercase bg-gray-200">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">nom</th>
+                                            <th scope="col" class="px-6 py-3">prenom</th>
+                                            <th scope="col" class="px-6 py-3">CNE</th>
+                                            <th scope="col" class="px-6 py-3">filier</th>
+                                            <th scope="col" class="px-6 py-3">niveau d'étude</th>
+                                            <th scope="col" class="px-6 py-3">sélectionner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr *ngFor="let student of students | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }" (click) = "toggleRowSelection(student)"  class="bg-white border-b">
+                                            <td class="px-6 py-4">{{student.utilisateur.nom}}</td>
+                                            <td class="px-6 py-4">{{student.utilisateur.prenom}}</td>
+                                            <td class="px-6 py-4">{{student.cne}}</td>
+                                            <td class="px-6 py-4">{{student.filiere}}</td>
+                                            <td class="px-6 py-4">{{student.niveauEtude}}</td>
+                                            <td class="px-6 py-4">
+                                                <input type="checkbox" [value]="student.idEtudiant" [checked]="isSelectedStudent(student)">
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <!-- start pagination -->
+                                <div class="pagination text-center mt-4">
+                                    <pagination-controls (pageChange)="page1 = $event"></pagination-controls>
+                                </div>
+                                <!-- end pagination -->
+
+                            </div>
+
+                        </div>
+                        <div class="flex pt-4 justify-between ">
+                            <p-button
+                                size="small"
+                                label="retour"
+                                icon="pi pi-arrow-left"
+                                (onClick)="prevCallback.emit()" />
+                            <p-button
+                                size="small"
+                                [disabled]="!isAnyStudentSelected()"
+                                label="suivant"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                                (onClick)="nextCallback.emit()" />
+                        </div>
+                    </ng-template>
+                    <!-- end list etudiant -->
+                </p-stepperPanel>
+
+                <p-stepperPanel header="choisir enseignant">
+                    <!-- start list teachers -->
+                    <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+                        <div class="list-cont">
+                            <div class="flex justify-between items-center mb-2">
+                                <select [(ngModel)]="d" (ngModelChange)="getAllTeachers()" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5" type="text">
+                                    <option value="" selected>Département</option>
+                                    <option *ngFor="let dp of departements" [value]="dp">{{dp}}</option>
+                                </select>
+                                <input [(ngModel)]="teacher_query" (ngModelChange)="getAllTeachers()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+                            </div>
+
+
+                            <!-- list teachers -->
+                            <div class="flex justify-start text-xl font-bold text-sky-700">
+                                <h3>sélectionnez un(e) enseignant(e)</h3>
+                            </div>
+
+                            <div class="flex flex-col justify-between min-h-80 relative overflow-x-auto rounded-lg mt-4">
+                                <table class="w-full text-sm text-left text-black shadow-md">
+                                    <thead class="text-xs uppercase bg-gray-200">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">nom</th>
+                                            <th scope="col" class="px-6 py-3">prenom</th>
+                                            <th scope="col" class="px-6 py-3">Tel</th>
+                                            <th scope="col" class="px-6 py-3">email</th>
+                                            <th scope="col" class="px-6 py-3">sélectionner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr *ngFor="let teacher of teachers | paginate: { itemsPerPage: 3, currentPage: page, totalItems: totalLength }" (click) = "selectRowTeacher(teacher)" [ngClass]="{'bg-sky-500': isSelectedTeacher(teacher)}" class="bg-white border-b">
+                                            <td class="px-6 py-4">{{teacher.utilisateur.nom}}</td>
+                                            <td class="px-6 py-4">{{teacher.utilisateur.prenom}}</td>
+                                            <td class="px-6 py-4">{{teacher.utilisateur.numTel}}</td>
+                                            <td class="px-6 py-4">{{teacher.utilisateur.email}}</td>
+                                            <td class="px-6 py-4">
+                                                <input type="radio" [(ngModel)]="selectedTeacherRadio" [value]="teacher.idEnseignant" [checked]="isSelectedTeacher(teacher)">
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <!-- start pagination -->
+                                <div class="pagination text-center mt-4">
+                                    <pagination-controls
+                                        (pageChange)="page = $event"
+                                        previousLabel="précédent"
+                                        nextLabel="suivant">
+                                    </pagination-controls>
+                                </div>
+                                <!-- end pagination -->
+                            </div>
+                            <!-- fin list teachers -->
+                        </div>
+                        <div class="flex pt-4  justify-between">
+                            <p-button
+                                size="small"
+                                label="retour"
+                                icon="pi pi-arrow-left"
+                                (onClick)="prevCallback.emit()" />
+
+                            <p-button (click)="affecter()" label="affecter" size="small" [disabled]="!selectedTeacherRadio"></p-button>
+                            <!-- <button type="button" (click)="affecter()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">affecter</button> -->
+
+                        </div>
+                    </ng-template>
+                    <!-- end list teachers -->
+                </p-stepperPanel>
+
+            </p-stepper>
+
+        </div>
+    </section>
+
+    <!-- message -->
+    <p-toast></p-toast>
+</main>
+<!-- end main -->

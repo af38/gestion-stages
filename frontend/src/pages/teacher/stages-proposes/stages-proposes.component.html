@@ -1,0 +1,192 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full pt-16 overflow-y-scroll h-dvh ">
+
+    <!-- start stages-list  -->
+    <section class="p-4 md:h-full">
+        <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+            <i class="pi pi-briefcase text-gray-500 border border-solid border-black shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">stages déposés</h2>
+        </div>
+        <div class="relative overflow-x-auto mt-4 rounded-lg min-h-96">
+            <table class="w-full text-sm text-left text-black">
+                <thead class="text-xs uppercase bg-gray-200 shadow-md">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Etudiant</th>
+                        <th scope="col" class="px-6 py-3">stage</th>
+                        <th scope="col" class="px-6 py-3">organimse</th>
+                        <th scope="col" class="px-6 py-3">date de soumission</th>
+                        <th scope="col" class="px-6 py-3">etat</th>
+                        <th scope="col" class="px-6 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let stage of stages | paginate: { itemsPerPage: 6, currentPage: page, totalItems: totalLength }"  class="bg-white border-b">
+                        <td class="px-6 py-4">
+                            <p-button
+                            (onClick)="showStudent(stage.depose.etudiant)"
+                            [label]="stage.depose.etudiant.utilisateur.nom + ' ' + stage.depose.etudiant.utilisateur.prenom"
+                            [outlined]="true"
+                            severity="secondary"
+                            size="small"
+                            icon="pi pi-eye"
+                            iconPos="right"/>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p-button
+                            (onClick)="showStage(stage)"
+                            [label]="stage.intitule"
+                            [outlined]="true"
+                            severity="secondary"
+                            size="small"
+                            icon="pi pi-eye"
+                            iconPos="right"/>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p-button
+                            (click)="showOrganime(stage.organisme)"
+                            [label]="stage.organisme.nomOrganisme"
+                            [outlined]="true"
+                            severity="secondary"
+                            size="small"
+                            icon="pi pi-eye"
+                            iconPos="right"/>
+                        </td>
+                        <td class="px-6 py-4">{{stage.depose.dateDepose}}</td>
+                        <td class="px-6 py-4">
+                            @if(stage.etat == 'accepté'){
+                                <p-tag severity="success" value="accepté"/>
+                            }@else if(stage.etat == 'refusé'){
+                                <p-tag severity="danger" value="refusé"/>
+                            }@else{
+                                <p-tag severity="info" value="draft"/>
+                            }
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-around">
+                                <p-button (click)="accepter(stage)"  icon="pi pi-thumbs-up" [rounded]="true" [raised]="true"  severity="success" size="small" title="accepter"></p-button>
+                                <p-button (click)="refuser(stage)"  icon="pi pi-thumbs-down" [rounded]="true" [raised]="true"  severity="danger" size="small" title="refuser"></p-button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- stage view modal -->
+                    @if(selectedStage){
+                        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="stage_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                            <div class="grid grid-cols-2">
+                                <div class="flex justify-center text-left">
+                                    <div>
+                                        <span class="block mb-3 font-semibold">Intitulé</span>
+                                        <span class="block mb-3 font-semibold">organisme</span>
+                                        <span class="block mb-3 font-semibold">Date de début</span>
+                                        <span class="block mb-3 font-semibold">Date de fin</span>
+                                        <span class="block mb-3 font-semibold">Spécialité demandée</span>
+                                        <span class="block mb-3 font-semibold">Objectif</span>
+                                        <span class="block mb-3 font-semibold">descriptif</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center text-left">
+                                    <div>
+                                        <span class="block mb-3">{{selectedStage.intitule}}</span>
+                                        <span class="block mb-3">{{selectedStage.organisme.nomOrganisme}}</span>
+                                        <span class="block mb-3">{{selectedStage.dateDebut}}</span>
+                                        <span class="block mb-3">{{selectedStage.dateFin}}</span>
+                                        <span class="block mb-3">{{selectedStage.specialite}}</span>
+                                        <span class="block mb-3">{{selectedStage.niveau}}</span>
+                                        <span class="block mb-3">{{selectedStage.objectif}}</span>
+                                        <span class="block mb-3">{{selectedStage.descriptif}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-dialog>
+                    }
+                    <!-- student view modal -->
+                    @if(selectedStudent){
+                        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="student_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                            <div class="grid grid-cols-2">
+                                <div class="flex justify-center text-left">
+                                    <div>
+                                        <span class="block mb-3 font-semibold">Nom</span>
+                                        <span class="block mb-3 font-semibold">Prénom</span>
+                                        <span class="block mb-3 font-semibold">CNE</span>
+                                        <span class="block mb-3 font-semibold">Numéro de téléphone</span>
+                                        <span class="block mb-3 font-semibold">Filière</span>
+                                        <span class="block mb-3 font-semibold">niveau d'étude</span>
+                                        <span class="block mb-3 font-semibold">date de naissence</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center text-left">
+                                    <div>
+                                        <span class="block mb-3">{{selectedStudent.utilisateur.nom}}</span>
+                                        <span class="block mb-3">{{selectedStudent.utilisateur.prenom}}</span>
+                                        <span class="block mb-3">{{selectedStudent.cne}}</span>
+                                        <span class="block mb-3">{{selectedStudent.utilisateur.numTel}}</span>
+                                        <span class="block mb-3">{{selectedStudent.filiere}}</span>
+                                        <span class="block mb-3">{{selectedStudent.niveauEtude}}</span>
+                                        <span class="block mb-3">{{selectedStudent.dateNaissance}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-dialog>
+                    }
+                    <!-- organisme view modal -->
+                    @if(selectedOrganisme){
+                        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="organisme_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                                <!-- information stage -->
+                                <div class="grid grid-cols-2">
+                                    <div class="flex justify-center text-left">
+                                        <div>
+                                            <span class="block mb-3 font-semibold">nom de l'organisme</span>
+                                            <span class="block mb-3 font-semibold">nom du contact</span>
+                                            <span class="block mb-3 font-semibold">prénom du contact</span>
+                                            <span class="block mb-3 font-semibold">typeOrganisme</span>
+                                            <span class="block mb-3 font-semibold">téléphone du contact</span>
+                                            <span class="block mb-3 font-semibold">email</span>
+                                            <span class="block mb-3 font-semibold">ville</span>
+                                            <span class="block mb-3 font-semibold">rue</span>
+                                            <span class="block mb-3 font-semibold">region</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center text-left">
+                                        <div>
+                                            <span class="block mb-3">{{selectedOrganisme.nomOrganisme}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.nomContact}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.prenomContact}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.typeOrganisme}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.telContact}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.emailContact}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.adresse.ville}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.adresse.rue}}</span>
+                                            <span class="block mb-3">{{selectedOrganisme.adresse.region}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                        </p-dialog>
+                    }
+                </tbody>
+            </table>
+        </div>
+                <!-- start pagination -->
+                <div class="pagination text-center mt-4">
+                    <pagination-controls
+                        (pageChange)="page = $event"
+                        previousLabel="précédent"
+                        nextLabel="suivant">
+                    </pagination-controls>
+                </div>
+                <!-- end pagination -->
+    </section>
+    <!-- end stages-list  -->
+</main>
+<!-- end main -->
+    <!-- message -->
+    <p-toast></p-toast>

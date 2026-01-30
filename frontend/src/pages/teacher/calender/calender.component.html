@@ -1,0 +1,20 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full pt-16 overflow-y-scroll h-dvh ">
+    <section class=" p-4 md:h-full">
+        <div class="rounded-xl p-4 mt-4">
+            <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+                <i class="pi pi-calendar text-gray-500 border border-solid border-black shadow-lg rounded-lg text-3xl p-2 "></i>
+                <h2 class="mb-2 text-3xl">calendrier</h2>
+            </div>
+            <full-calendar [options]="calendarOptions"></full-calendar>
+        </div>
+    </section>
+</main>

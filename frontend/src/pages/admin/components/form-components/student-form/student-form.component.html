@@ -1,0 +1,89 @@
+<form method="post" [formGroup]="formGroup" class="w-full p-4 border border-gray-300 bg-white" (ngSubmit)="create($event)">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+
+<!-- Nom -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">nom</label>
+    <input type="text" formControlName = "nom" name="nom"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("nom")){
+        <span class="error">{{getError("nom")}}</span>
+    }
+</div>
+
+<!-- Prenom -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">prénom</label>
+    <input type="text" formControlName = "prenom" name="prenom"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("prenom")){
+        <span class="error">{{getError("prenom")}}</span>
+    }
+</div>
+
+<!-- Email -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">email</label>
+    <input type="text" formControlName = "email" name="email"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("email")){
+        <span class="error">{{getError("email")}}</span>
+    }
+</div>
+
+<!-- CNE -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">CNE</label>
+    <input type="text" formControlName = "cne" name="cne"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("cne")){
+        <span class="error">{{getError("cne")}}</span>
+    }
+</div>
+
+<!-- TEL -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">numéro de téléphone.</label>
+    <input type="tel" formControlName = "numTel" name="numTel"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("numTel")){
+        <span class="error">{{getError("numTel")}}</span>
+    }
+</div>
+
+<!-- Filière-->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">filière</label>
+    <input type="text" formControlName = "filiere" name="filiere"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("filiere")){
+        <span class="error">{{getError("filiere")}}</span>
+    }
+</div>
+
+<!-- niveau d'étude -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">niveau d'étude</label>
+    <input type="text" formControlName = "niveauEtude" name="niveauEtude"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("niveauEtude")){
+        <span class="error">{{getError("niveauEtude")}}</span>
+    }
+</div>
+
+<!-- spécialité -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">spécialité</label>
+    <input type="text" formControlName = "specialite" name="specialite"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("specialite")){
+        <span class="error">{{getError("specialite")}}</span>
+    }
+</div>
+
+<!-- Date de naissance -->
+<div>
+    <label class="block mb-2 text-sm font-medium" for="">date de Naissance</label>
+    <input type="date" formControlName = "dateNaissance" name="dateNaissance"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    @if(getError("dateNaissance")){
+        <span class="error">{{getError("dateNaissance")}}</span>
+    }
+</div>
+
+
+</div>
+    <button type="submit" class="w-full mt-5 rounded-md bg-blue-600 text-center py-3 text-white" >créer</button>
+</form>
+<p-toast></p-toast>

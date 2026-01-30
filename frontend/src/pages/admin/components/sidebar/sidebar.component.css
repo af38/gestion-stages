@@ -1,0 +1,11 @@
+.active{
+    background-color: #0e6486;
+}
+.show{
+    left: 0;
+    transition: .5s;
+}
+.hide{
+    left: -16rem;
+    transition: .5s;
+}

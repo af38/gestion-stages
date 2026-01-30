@@ -1,0 +1,157 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-lvh pt-16 overflow-y-scroll">
+
+    <!-- start reclamation table -->
+    <section class="p-4 mt-4 md:h-full">
+        <div class="flex items-center justify-start gap-4 mt-3">
+            <i class="pi pi-flag text-gray-500 border border-solid border-black shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">Reclamations</h2>
+        </div>
+        <div class="rounded-xl p-4 mt-4">
+            <div class="relative overflow-x-auto mt-4 rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <select [(ngModel)]="etat" (ngModelChange)="getReclamations()" class="block p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+                        <option value="" selected>Etat </option>
+                        <option value="Traitée">Traitée</option>
+                        <option value="Annulée">Annulée</option>
+                        <option value="En cours">En cours</option>
+                    </select>
+                    <input [(ngModel)]="query" (ngModelChange)="getReclamations()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+                </div>
+                <table class="w-full text-sm text-left text-black shadow-md">
+                    <thead class="text-xs uppercase bg-gray-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">objet</th>
+                            <th scope="col" class="px-6 py-3">enseignant</th>
+                            <th scope="col" class="px-6 py-3">etudiant</th>
+                            <th scope="col" class="px-6 py-3">date</th>
+                            <th scope="col" class="px-6 py-3">etat</th>
+                            <th scope="col" class="px-6 py-3">action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let reclamation of reclamations | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }" class="bg-white border-b">
+                            <td class="px-6 py-4">{{reclamation.objet}}</td>
+                            <td class="px-6 py-4">
+                                <p-button
+                                    (onClick)="getTeacher(reclamation.enseignant)"
+                                    [label]="reclamation.enseignant.utilisateur.prenom + ' ' + reclamation.enseignant.utilisateur.nom"
+                                    [outlined]="true"
+                                    severity="secondary"
+                                    size="small"
+                                    icon="pi pi-eye"
+                                    iconPos="right"/>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p-button
+                                    (onClick)="getStudent(reclamation.etudiant)"
+                                    [label]="reclamation.etudiant.utilisateur.prenom + ' ' + reclamation.etudiant.utilisateur.nom"
+                                    [outlined]="true"
+                                    severity="secondary"
+                                    size="small"
+                                    icon="pi pi-eye"
+                                    iconPos="right"/>
+                            </td>
+                            <td class="px-6 py-4">{{reclamation.dateReclamation}}</td>
+                            <td class="px-6 py-4">
+                                <!-- En cours Traitée Annulée -->
+                                @if(reclamation.etat == 'Traitée'){
+                                    <p-tag [value]="reclamation.etat" severity="success" />
+                                }@else if(reclamation.etat == 'Annulée'){
+                                    <p-tag [value]="reclamation.etat" severity="danger"/>
+                                }@else if(reclamation.etat == 'En cours'){
+                                    <p-tag [value]="reclamation.etat" />
+                                }@else{
+                                    <p-tag [value]="reclamation.etat" severity="Warning" />
+                                }
+                            </td>
+                            <td class="px-6 py-4">
+                                <p-button (click)="review(reclamation.idReclamation)" icon="pi pi-bolt" [rounded]="true" size="small" [raised]="true" title="Marqué comme en cours de traitement"/>
+                                <p-button (click)="checked(reclamation.idReclamation)" icon="pi pi-check" [rounded]="true" severity="success" size="small" [raised]="true" class="mx-3" title="Marquée comme traitée"/>
+                                <p-button (click)="cancel(reclamation.idReclamation)" icon="pi pi-times" [rounded]="true" severity="danger" size="small" [raised]="true" title="Annulée"/>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+                <!-- start pagination -->
+                <div class="pagination text-center mt-4">
+                    <pagination-controls
+                    (pageChange)="page = $event"
+                    previousLabel="précédent"
+                    nextLabel="suivant"
+                    ></pagination-controls>
+                </div>
+                <!-- end pagination -->
+            </div>
+        </div>
+    </section>
+    <!-- end reclamation table -->
+    <!-- Teacher view modal -->
+    @if(selectedTeacher){
+        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="visible_teacher" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+            <div class="grid grid-cols-2">
+                <div class="flex justify-center text-left">
+                    <div>
+                        <span class="block mb-3 font-semibold">Nom</span>
+                        <span class="block mb-3 font-semibold">Prénom</span>
+                        <span class="block mb-3 font-semibold">email</span>
+                        <span class="block mb-3 font-semibold">Numéro de téléphone</span>
+                        <span class="block mb-3 font-semibold">Departement</span>
+                    </div>
+                </div>
+                <div class="flex justify-center text-left">
+                    <div>
+                        <span class="block mb-3">{{selectedTeacher.utilisateur.nom}}</span>
+                        <span class="block mb-3">{{selectedTeacher.utilisateur.prenom}}</span>
+                        <span class="block mb-3">{{selectedTeacher.utilisateur.email}}</span>
+                        <span class="block mb-3">{{selectedTeacher.utilisateur.numTel}}</span>
+                        <span class="block mb-3">{{selectedTeacher.departement}}</span>
+                    </div>
+                </div>
+            </div>
+        </p-dialog>
+    }
+    <!--Student view modal -->
+    @if(selectedStudent){
+        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="visible_student" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+            <div class="grid grid-cols-2">
+                <div class="flex justify-center text-left">
+                    <div>
+                        <span class="block mb-3 font-semibold">Nom</span>
+                        <span class="block mb-3 font-semibold">Prénom</span>
+                        <span class="block mb-3 font-semibold">CNE</span>
+                        <span class="block mb-3 font-semibold">email</span>
+                        <span class="block mb-3 font-semibold">Numéro de téléphone</span>
+                        <span class="block mb-3 font-semibold">Filière</span>
+                        <span class="block mb-3 font-semibold">niveau d'étude</span>
+                        <span class="block mb-3 font-semibold">date de naissence</span>
+                    </div>
+                </div>
+                <div class="flex justify-center text-left">
+                    <div>
+                        <span class="block mb-3">{{selectedStudent.utilisateur.nom}}</span>
+                        <span class="block mb-3">{{selectedStudent.utilisateur.prenom}}</span>
+                        <span class="block mb-3">{{selectedStudent.cne}}</span>
+                        <span class="block mb-3">{{selectedStudent.utilisateur.email}}</span>
+                        <span class="block mb-3">{{selectedStudent.utilisateur.numTel}}</span>
+                        <span class="block mb-3">{{selectedStudent.filiere}}</span>
+                        <span class="block mb-3">{{selectedStudent.niveauEtude}}</span>
+                        <span class="block mb-3">{{selectedStudent.dateNaissance}}</span>
+                        </div>
+                </div>
+            </div>
+        </p-dialog>
+    }
+</main>
+<!-- end main -->
+

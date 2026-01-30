@@ -1,0 +1,89 @@
+<div class="flex justify-between items-center mb-4">
+    <select [(ngModel)]="d" (ngModelChange)="getTeachers()" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5" type="text">
+        <option value="" selected>Département</option>
+        <option *ngFor="let dp of departements" [value]="dp">{{dp}}</option>
+    </select>
+    <input [(ngModel)]="query" (ngModelChange)="getTeachers()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+</div>
+
+<table class="w-full text-sm text-left text-black shadow-md">
+    <thead class="text-xs uppercase bg-gray-200">
+        <tr>
+            <th scope="col" class="px-6 py-3">nom</th>
+            <th scope="col" class="px-6 py-3">prenom</th>
+            <th scope="col" class="px-6 py-3">Tel</th>
+            <th scope="col" class="px-6 py-3">email</th>
+            <th scope="col" class="px-6 py-3">département</th>
+            <th scope="col" class="px-6 py-3">commission</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr *ngFor="let teacher of teachers | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }" class="bg-white border-b">
+            <td class="px-6 py-4">{{teacher.utilisateur.nom}}</td>
+            <td class="px-6 py-4">{{teacher.utilisateur.prenom}}</td>
+            <td class="px-6 py-4">{{teacher.utilisateur.numTel}}</td>
+            <td class="px-6 py-4">{{teacher.utilisateur.email}}</td>
+            <td class="px-6 py-4">{{teacher.departement}}</td>
+            <td class="px-6 py-4">
+                @if(membershipStatus[teacher.idEnseignant]){
+                    <button type="button" (click)="disaffecter(teacher)" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">désaffecter</button>
+                }@else{
+                    <button type="button" (click)="affecter(teacher)" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">affecter</button>
+                }
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<!-- start pagination -->
+<div class="pagination text-center mt-4">
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+</div>
+
+<!-- affecter pop up -->
+<p-dialog class="text-center" header="Affecter"  [modal]="true" [(visible)]="visible_view" [style]="{width: '30vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+    <select [(ngModel)]="idCommission" class="w-full sm:w-4/12  mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+        <option *ngFor="let comm of commissions" [value]="comm.idCommission" >{{comm.filiere}}</option>
+    </select>
+    <button type="button" (click)="affectation()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">affecter</button>
+
+</p-dialog>
+
+<!-- delete confirmation modal -->
+<p-toast></p-toast>
+<p-confirmDialog #cd>
+    <ng-template pTemplate="headless" let-message>
+        <div class="flex flex-col gap-4 items-center p-5  rounded-lg bg-white">
+            <div class="rounded-full bg-red-600 inline-flex justify-center items-center h-24 w-24">
+                <i class="pi pi-question text-5xl text-white"></i>
+            </div>
+
+            <span class="font-bold text-2xl block mb-2 mt-4">
+                {{ message.header }}
+            </span>
+
+            <p class="mb-0">{{ message.message }}</p>
+
+            <div class=" w-full flex items-center gap-2 mt-4">
+                <button
+                    pButton
+                    label="disaffecter"
+                    (click)="cd.accept()"
+                    size="small"
+                    [outlined]="true"
+                    severity="danger"
+                    class="w-32">
+                </button>
+                <button
+                    pButton
+                    label="Annuler"
+                    (click)="cd.reject()"
+                    size="small"
+                    class="w-32 ">
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmDialog>

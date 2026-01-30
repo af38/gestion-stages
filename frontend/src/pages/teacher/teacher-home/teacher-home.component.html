@@ -1,0 +1,209 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-full pt-16 overflow-y-scroll">
+
+    <!-- start account-creation-form -->
+    <section class="p-4 h-fit">
+        <div class="rounded-xl p-4 mt-4">
+            <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+                <i class="pi pi-home text-gray-500 border border-solid border-black shadow-lg rounded-lg text-3xl p-2 "></i>
+                <h2 class="mb-2 text-3xl">page d'acueil</h2>
+            </div>
+            <div class="list-cont">
+                <!-- list etudiant -->
+                <!-- search control -->
+                <div class="flex justify-start items-center">
+                    <div class="w-1/2 flex gap-1 items-start">
+                        <select [(ngModel)]="selectedStageId" (ngModelChange)="getStudentsByStage()" class="w-full mt-4 sm:w-6/12  mb-3 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                            <option [value]="0">stage</option>
+                            <option *ngFor="let stage of stages" [value]="stage.idStage">{{stage.intitule}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-center flex-col mt-4 text-xl font-bold gap-y-4 sm:grid sm:grid-cols-4 sm:gap-4 md:h-dvh ">
+                    @if(students){
+                        <!-- Card start -->
+                        <div  *ngFor="let student of students | paginate: { itemsPerPage: 8, currentPage: page, totalItems: totalLength }" class="max-w-sm bg-white rounded-lg overflow-hidden shadow-lg h-fit">
+                            <div class=" px-4 pb-6 pt-4">
+                                <div class="flex items-center justify-end">
+                                    <button (click)="showNote(student)" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                                        note
+                                    </button>
+                                </div>
+                                <div class="text-center my-4 ">
+                                    <img (click)="showDialogView(student)" class="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4 cursor-pointer hover:border-solid hover:border-gray-100 hover:border-2"
+                                        src="../../../assets/user.jpg" alt="user">
+                                    <div class="py-2">
+                                        <h3 class="font-bold text-2xl text-black mb-1">{{student.utilisateur.prenom + " " + student.utilisateur.nom}}</h3>
+                                        <div class="inline-flex text-gray-700 items-center">
+                                            <i class="pi pi-envelope mr-2"></i>
+                                            <span>{{student.utilisateur.email}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 px-2 justify-center">
+                                    <button (click)="showDialogSeance(student)" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">
+                                        planifier seance
+                                    </button>
+                                    <button (click)="showDialogReclamation(student)" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                                        reclamer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Card end -->
+                    }
+                </div>
+
+                <!-- start: ajouter reclamation pop up -->
+                 @if(selectedStudent && visible_reclamation){
+                    <p-dialog class="text-left" header="reclamer"  [modal]="true" [(visible)]="visible_reclamation" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                        <form [formGroup]="formGroup" class="w-full" (ngSubmit)="create($event)">
+                            <div class="grid gap-5">
+
+
+                              <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Objet</label>
+                                    <input type="text" formControlName="objet" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500"/>
+                                    @if(getError("objet")){
+                                        <span class="error">{{ getError("objet") }}</span>
+                                    }
+                              </div>
+
+                               <!-- Description -->
+                              <div>
+                               <label class="block mb-2 text-sm font-medium" for="">Description (optionnel)</label>
+                               <textarea  formControlName="description" cols="30" rows="10" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+                              </div>
+
+                            </div>
+
+                            <button type="submit" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white">Ajouter</button>
+                        </form>
+                    </p-dialog>
+                }
+                <!-- end: ajouter reclamation pop up -->
+
+                <!-- start ajouter seance d'incadrement pop up -->
+                <p-dialog class="text-left" header="planifier"  [modal]="true" [(visible)]="visible_seance" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                    <form [formGroup]="seanceFormGroup" class="w-full" (ngSubmit)="planifier($event)" action="#" method="post">
+                        <div class="grid gap-5">
+
+                            <!-- date seance -->
+                          <div>
+                                <label class="block mb-2 text-sm font-medium" for="">Date de séance</label>
+                                <input type="date" formControlName="dateSeance" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500"/>
+                              @if(getError("dateSeance")){
+                                    <span class="error">{{ getError("dateSeance") }}</span>
+                                }
+                          </div>
+
+                           <!-- heure -->
+                          <div>
+                           <label class="block mb-2 text-sm font-medium" for="">Heure</label>
+                           <input type="time" formControlName="heureSeance" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500"/>
+                            @if(getError("heureSeance")){
+                                <span class="error">{{ getError("heureSeance") }}</span>
+                            }
+                          </div>
+
+                        </div>
+
+                        <button type="submit" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white">Ajouter</button>
+                    </form>
+                </p-dialog>
+                <!-- end ajouter seance d'incadrement pop up -->
+
+                <!-- start note setting -->
+                <p-dialog class="text-left" header="note d'étudiant"  [modal]="true" [(visible)]="visible_note" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '700px': '75vw' }">
+                    <form [formGroup]="noteGroup" class="w-full" (ngSubmit)="setNote($event)">
+                    <div>
+                        <label class="block mb-2 text-sm font-medium" for="">note</label>
+                        <input type="number" formControlName="note" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500"/>
+                        @if(getError("note")){
+                            <span class="error">{{ getError("note") }}</span>
+                        }
+                    </div>
+                    <button type="submit" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white">Attribuer</button>
+
+                    </form>
+                </p-dialog>
+                <!-- end note setting -->
+
+                <!-- start pagination -->
+                <div class="pagination text-center mt-4">
+                    <pagination-controls
+                        (pageChange)="page = $event"
+                        previousLabel="précédent"
+                        nextLabel="suivant">
+                    </pagination-controls>
+                </div>
+                <!-- end pagination -->
+
+
+             <!-- view student modal -->
+            @if(selectedStudent != null && visible_view){
+                <p-dialog class="text-center" header="Profil"  [modal]="true" [(visible)]="visible_view" [style]="{width: '40vh'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                    <div class="text-black pb-2">
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">Nom</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.utilisateur.nom}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">Prénom</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.utilisateur.prenom}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">CNE</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.cne}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">Numéro de téléphone</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.utilisateur.numTel}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">Filière</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.filiere}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">niveau d'étude</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.niveauEtude}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">specialite</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.specialite}}</dd>
+                        </div>
+
+                        <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium">date de naissence</dt>
+                            <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStudent.dateNaissance}}</dd>
+                        </div>
+                    </div>
+                </p-dialog>
+            }
+            <!-- end student view modal -->
+            <!-- end list etudiant -->
+            </div>
+        </div>
+
+        <!-- delete confirmation modal -->
+        <p-toast></p-toast>
+    </section>
+    <!-- end account-creation-form -->
+</main>
+<!-- end main -->

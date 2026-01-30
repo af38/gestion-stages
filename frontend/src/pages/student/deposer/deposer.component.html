@@ -1,0 +1,577 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar >
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-full pt-16 overflow-y-scroll">
+    <!-- start creatin stage deposee form -->
+    <section class="p-4 max-h-fit md:h-full">
+        <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+            <i class="pi pi-briefcase text-gray-500 border border-solid border-black  shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">déposer des stages</h2>
+        </div>
+        <p-accordion [activeIndex]="0">
+            <p-accordionTab header="Formulaire de dépôt des stages">
+                <form (ngSubmit)="create()"  [formGroup]="formGroup" class="w-full grid grid-rows-2">
+                    <!-- organisme -->
+                    <div class="rounded-xl bg-white p-4 mt-4 shadow-lg border border-solid border-gray-200">
+                        <h1 class="mb-2 text-3xl">organisme</h1>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+
+                            <!-- type organisme-->
+                            <div class="w-full">
+                                    <label class="block mb-2 text-sm font-medium" for="">type de l'organisme</label>
+                                    <select formControlName = "typeOrganisme" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+                                        <option value="Entreprise privée">Entreprise privée</option>
+                                        <option value="Organisation gouvernementale"> Organisations gouvernementale</option>
+                                        <option value="Organisation non gouvernementale (ONG)"> Organisation non gouvernementale (ONG)</option>
+                                        <option value="Institution académique"> Institution académique</option>
+                                        <option value="Organisation internationale"> Organisation internationale</option>
+                                        <option value="Entreprise multinationale">Entreprise multinationale</option>
+                                        <option value="Association professionnelle">Association professionnelle</option>
+                                        <option value="Média et communication">Média et communication</option>
+                                    </select>
+                                    @if(getError("typeOrganisme")){
+                                        <span class="error">{{getError("typeOrganisme")}}</span>
+                                    }
+                            </div>
+
+                            <!-- nom organisme-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nom de l'organisme</label>
+                                <input type="text" formControlName = "nomOrganisme" name="nomOrganisme"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nomOrganisme")){
+                                    <span class="error">{{getError("nomOrganisme")}}</span>
+                                }
+                            </div>
+
+                            <input type="number" formControlName = "idEtudiant" [value]="loggeduser.idUser"  hidden>
+
+                            <!-- nom contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nom du contact</label>
+                                <input type="text" formControlName = "nomContact" name="nomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nomContact")){
+                                    <span class="error">{{getError("nomContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- prenom contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">prénom du contact</label>
+                                <input type="text" formControlName = "prenomContact" name="prenomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("prenomContact")){
+                                    <span class="error">{{getError("prenomContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- tel contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">téléphone du contact</label>
+                                <input type="tel" formControlName = "telContact" name="telContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("telContact")){
+                                    <span class="error">{{getError("telContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- email contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">email</label>
+                                <input type="email" formControlName = "emailContact" name="emailContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("emailContact")){
+                                    <span class="error">{{getError("emailContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- ville-->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">ville</label>
+                                <select formControlName = "ville" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option *ngFor="let city of villes" [value]="city">{{city}}</option>
+                                </select>
+                                @if(getError("ville")){
+                                    <span class="error">{{getError("ville")}}</span>
+                                }
+                            </div>
+
+                            <!-- rue -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">rue</label>
+                                <input type="text" formControlName = "rue" name="rue"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("rue")){
+                                    <span class="error">{{getError("rue")}}</span>
+                                }
+                            </div>
+
+                            <!-- region-->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">region</label>
+                                <select formControlName = "region" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option *ngFor="let region of regions" [value]="region">{{region}}</option>
+                                </select>
+                                @if(getError("region")){
+                                    <span class="error">{{getError("region")}}</span>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- stage -->
+                    <div class="rounded-xl bg-white p-4 mt-4 shadow-lg border border-solid border-gray-200">
+                        <h1 class="mb-2 text-3xl">stage</h1>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+
+                                <!-- intitule -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Intitulé</label>
+                                    <input type="text" formControlName = "intitule" name="intitule"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("intitule")){
+                                        <span class="error">{{getError("intitule")}}</span>
+                                    }
+                                </div>
+
+                                <!-- dateDebut -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Date de début</label>
+                                    <input type="date" formControlName = "dateDebut" name="dateDebut"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("dateDebut")){
+                                        <span class="error">{{getError("dateDebut")}}</span>
+                                    }
+                                </div>
+
+                                <!-- dateFin -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Date de fin</label>
+                                    <input type="date" formControlName = "dateFin" name="dateFin"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("dateFin")){
+                                        <span class="error">{{getError("dateFin")}}</span>
+                                    }
+                                </div>
+
+                                <!-- descriptif-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">descriptif</label>
+                                    <input type="text" formControlName = "descriptif" name="descriptif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("descriptif")){
+                                        <span class="error">{{getError("descriptif")}}</span>
+                                    }
+                                </div>
+
+                                <!-- objectif-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">objectif</label>
+                                    <input type="text" formControlName = "objectif" name="objectif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("objectif")){
+                                        <span class="error">{{getError("objectif")}}</span>
+                                    }
+                                </div>
+
+                                <!-- specialite -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">specialite</label>
+                                    <input type="text" formControlName = "specialite" name="specialite"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("specialite")){
+                                        <span class="error">{{getError("specialite")}}</span>
+                                    }
+                                </div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white" >déposer</button>
+                </form>
+            </p-accordionTab>
+        </p-accordion>
+    </section>
+    <!-- end creatin stage deposee form -->
+
+    <!-- start stage and organisme crud table -->
+    <section class="p-4">
+        <div class="relative overflow-x-auto mt-4 rounded-lg min-h-96">
+            <table class="w-full text-sm text-left text-black shadow-md">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">stage</th>
+                        <th scope="col" class="px-6 py-3">organisme</th>
+                        <th scope="col" class="px-6 py-3">date de soumission</th>
+                        <th scope="col" class="px-6 py-3">etat</th>
+                        <th scope="col" class="px-6 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let stage of stagesDeposes | paginate: { itemsPerPage: 6, currentPage: page, totalItems: totalLength }"  class="bg-white border-b">
+                        <td class="px-6 py-4">
+                            <p-button
+                                (onClick)="showDialogStage(stage)"
+                                [label]="trimText(stage.intitule)"
+                                [outlined]="true"
+                                severity="secondary"
+                                size="small"
+                                icon="pi pi-eye"
+                                iconPos="right"/>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p-button
+                            (onClick)="showDialogOrganisme(stage.organisme)"
+                            [label]="trimText(stage.organisme.nomOrganisme)"
+                            [outlined]="true"
+                            severity="secondary"
+                            size="small"
+                            icon="pi pi-eye"
+                            iconPos="right"/>
+                        </td>
+                        <td class="px-6 py-4">{{stage.depose.dateDepose}}</td>
+                        <td class="px-6 py-4">
+                            @if(stage.depose.etat == 'accepté'){
+                                <p-tag severity="success" value="accepté"/>
+                            }@else if(stage.depose.etat == 'refusé'){
+                                <p-tag severity="danger" value="refusé"/>
+                            }@else{
+                                <p-tag severity="info" value="draft"/>
+                            }
+                        </td>
+                        <td class="px-6 py-4">
+                            @if(stage.depose.etat == 'accepté'){
+                                -
+                            }@else{
+                                <p-button (click)="annuler(stage.organisme.idOrganisme)" icon="pi pi-trash" [rounded]="true" severity="danger" size="small" [raised]="true" title="Annulée"/>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- start pagination -->
+        <div class="pagination text-center mt-4">
+            <pagination-controls
+                (pageChange)="page = $event"
+                previousLabel="précédent"
+                nextLabel="suivant">
+            </pagination-controls>
+        </div>
+        <!-- end pagination -->
+    </section>
+    <!-- end stage and organisme crud table -->
+
+    <!-- modals -->
+    <!-- stage view modal -->
+    @if(visible_stage_view){
+        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="visible_stage_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+            <!-- information stage -->
+            <div class="text-black pb-2">
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">intitulé</dt>
+                    <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStage.intitule}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">date de début</dt>
+                    <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedStage.dateDebut}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">date de fin</dt>
+                    <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedStage.dateFin}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">objectif</dt>
+                    <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedStage.objectif}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">descriptif</dt>
+                    <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedStage.descriptif}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">spécialité</dt>
+                    <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStage.specialite}}</dd>
+                </div>
+
+            </div>
+            <div>
+                <button (click)="showEditStage()" class="text-white w-full bg-slate-600  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">modifier</button>
+            </div>
+        </p-dialog>
+    }
+
+    <!-- organisme view modal -->
+    @if(visible_organisme_view){
+        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="visible_organisme_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                <!-- information organisme -->
+                <div class="text-black pb-2">
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">nom de l'organisme</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.nomOrganisme}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">nom du contac</dt>
+                        <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedOrganisme.nomContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">prénom du contact</dt>
+                        <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.prenomContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">type de l'organisme</dt>
+                        <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedOrganisme.typeOrganisme}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">téléphone du contact</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.telContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">email</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.emailContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">ville</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.adresse.ville}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">rue</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.adresse.rue}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">region</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.adresse.region}}</dd>
+                    </div>
+
+                </div>
+                <button (click)="showEditOrganisme()" class="text-white w-full bg-slate-600  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">modifier</button>
+
+        </p-dialog>
+    }
+
+    <!-- stage edit modal -->
+    @if(visible_stage_edit){
+        <p-dialog class="text-center" header="modifier"  [modal]="true" [(visible)]="visible_stage_edit" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+            <!-- edit form -->
+            <div class="flex justify-center text-left ">
+                <form [formGroup]="editstageFormGroup" class="w-full" (ngSubmit)="editStage()">
+                    <div class = "grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 w-full">
+                        <!-- intitule -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" >intitulé</label>
+                            <input type="text" formControlName = "intitule"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("intitule")){
+                                <span class="error">{{getError("intitule")}}</span>
+                            }
+                        </div>
+
+                        <!-- dateDebut -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">date de début</label>
+                                    <input type="text" formControlName = "dateDebut"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("dateDebut")){
+                                        <span class="error">{{getError("dateDebut")}}</span>
+                                    }
+                            </div>
+
+                            <!-- dateFin -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">date de fin</label>
+                                <input type="text" formControlName = "dateFin" name="dateFin"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("dateFin")){
+                                    <span class="error">{{getError("dateFin")}}</span>
+                                }
+                            </div>
+
+                                <!-- objectif-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">objectif</label>
+                                    <input type="text" formControlName = "objectif" name="objectif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("objectif")){
+                                        <span class="error">{{getError("objectif")}}</span>
+                                    }
+                                </div>
+
+                            <!-- descriptif-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">descriptif</label>
+                                <input type="text" formControlName = "descriptif" name="descriptif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("descriptif")){
+                                    <span class="error">{{getError("descriptif")}}</span>
+                                }
+                            </div>
+
+                            <!-- specialite -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">spécialité</label>
+                                <input type="text" formControlName = "specialite" name="specialite"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("specialite")){
+                                    <span class="error">{{getError("specialite")}}</span>
+                                }
+                            </div>
+                        </div>
+                            <button type="submit" class="w-full mt-5 rounded-md bg-slate-600  text-center py-3 text-white" >modifier</button>
+                </form>
+            </div>
+
+         </p-dialog>
+    }
+    <!-- organimse edit modal -->
+    @if(visible_organisme_edit){
+        <p-dialog class="text-center" header="modifier"  [modal]="true" [(visible)]="visible_organisme_edit" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                <!-- edit form -->
+                <div class="flex justify-center text-left ">
+                    <form [formGroup]="editOrganismeFormGroup" class="w-full" (ngSubmit)="editOrganisme()" action="#" method="post">
+                        <div class = "grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 w-full">
+
+                            <!-- type organisme-->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">typeOrganisme</label>
+                                <select formControlName = "typeOrganisme" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option value="Entreprises privées">Entreprises privées </option>
+                                    <option value="Organisations gouvernementales"> Organisations gouvernementales </option>
+                                    <option value="Organisations non gouvernementales (ONG)"> Organisations non gouvernementales (ONG) </option>
+                                    <option value="Institutions académiques "> Institutions académiques </option>
+                                    <option value="Organisations internationales "> Organisations internationales </option>
+                                    <option value="Entreprises multinationales">Entreprises multinationales </option>
+                                    <option value="Associations professionnelles">Associations professionnelles</option>
+                                    <option value="Médias et communication ">Médias et communication  </option>
+                                </select>
+                                @if(getError("typeOrganisme")){
+                                    <span class="error">{{getError("typeOrganisme")}}</span>
+                                }
+                            </div>
+
+                            <!-- nom organisme-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nom de l'organisme</label>
+                                <input type="text" formControlName = "nomOrganisme" name="nomOrganisme"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nomOrganisme")){
+                                    <span class="error">{{getError("nomOrganisme")}}</span>
+                                }
+                            </div>
+
+                            <!-- nom contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nom du contact</label>
+                                <input type="text" formControlName = "nomContact" name="nomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nomContact")){
+                                    <span class="error">{{getError("nomContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- prenom contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">prénom du contact</label>
+                                <input type="text" formControlName = "prenomContact" name="prenomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("prenomContact")){
+                                    <span class="error">{{getError("prenomContact")}}</span>
+                                }
+                            </div>
+
+                        <!-- tel contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">téléphone du contact</label>
+                                <input type="tel" formControlName = "telContact" name="telContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("telContact")){
+                                    <span class="error">{{getError("telContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- email contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">email</label>
+                                <input type="email" formControlName = "emailContact" name="emailContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("emailContact")){
+                                    <span class="error">{{getError("emailContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- ville-->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">ville</label>
+                                <select formControlName = "ville" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option *ngFor="let city of villes" [value]="city">{{city}}</option>
+                                </select>
+                                @if(getError("ville")){
+                                    <span class="error">{{getError("ville")}}</span>
+                                }
+                            </div>
+
+                            <!-- rue -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">rue</label>
+                                <input type="text" formControlName = "rue" name="rue"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("rue")){
+                                    <span class="error">{{getError("rue")}}</span>
+                                }
+                            </div>
+
+                            <!-- region-->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">region</label>
+                                <select formControlName = "region" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option *ngFor="let region of regions" [value]="region">{{region}}</option>
+                                </select>
+                                @if(getError("region")){
+                                    <span class="error">{{getError("region")}}</span>
+                                }
+                            </div>
+
+
+
+
+                        </div>
+                            <button type="submit" class="w-full mt-5 rounded-md bg-slate-600  text-center py-3 text-white" >modifier</button>
+                    </form>
+                </div>
+
+        </p-dialog>
+    }
+<!-- delete confirmation modal -->
+<p-toast></p-toast>
+<p-confirmDialog #cd>
+    <ng-template pTemplate="headless" let-message>
+        <div class="flex flex-col gap-4 items-center p-5  rounded-lg bg-white">
+            <div class="rounded-full bg-red-600 inline-flex justify-center items-center h-24 w-24">
+                <i class="pi pi-question text-5xl text-white"></i>
+            </div>
+
+            <span class="font-bold text-2xl block mb-2 mt-4">
+                {{ message.header }}
+            </span>
+
+            <p class="mb-0">{{ message.message }}</p>
+
+            <div class=" w-full flex items-center gap-2 mt-4">
+                <button
+                    pButton
+                    label="confirmer"
+                    (click)="cd.accept()"
+                    size="small"
+                    [outlined]="true"
+                    severity="danger"
+                    class="w-32">
+                </button>
+                <button
+                    pButton
+                    label="Annuler"
+                    (click)="cd.reject()"
+                    size="small"
+                    class="w-32 ">
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmDialog>
+</main>
+<!-- end main -->

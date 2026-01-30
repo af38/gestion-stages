@@ -1,0 +1,219 @@
+
+
+<div class="flex flex-col relative rounded-lg overflow-x-auto mt-4 min-h-96">
+    <div class="flex justify-between items-center mt-2">
+        <select [(ngModel)]="filiere" (ngModelChange)="getAllStudents()" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5" type="text">
+            <option value="" selected>Filière</option>
+            <option *ngFor="let filiere of uniqueFilieres" [value]="filiere">{{filiere}}</option>
+        </select>
+        <input [(ngModel)]="query" (ngModelChange)="getAllStudents()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+    </div>
+    <table class="w-full text-sm text-left text-black shadow-md mt-2">
+        <thead class="text-xs text-black uppercase bg-gray-200">
+            <tr>
+                <th scope="col" class="px-6 py-3">Nom</th>
+                <th scope="col" class="px-6 py-3">Prénom</th>
+                <th scope="col" class="px-6 py-3">CNE</th>
+                <th scope="col" class="px-6 py-3">Filière</th>
+                <th scope="col" class="px-6 py-3">niveau d'étude</th>
+                <th scope="col" class="px-6 py-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+                <tr  *ngFor="let student of students | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }" class="bg-white border-b">
+                    <td class="px-6 py-4">{{student.utilisateur.nom}}</td>
+                    <td class="px-6 py-4">{{student.utilisateur.prenom}}</td>
+                    <td class="px-6 py-4">{{student.cne}}</td>
+                    <td class="px-6 py-4">{{student.filiere}}</td>
+                    <td class="px-6 py-4">{{student.niveauEtude}}</td>
+                    <td class="px-6 py-4">
+                        <p-button (click)="showDialogView(student)" icon="pi pi-eye" [rounded]="true" [raised]="true"></p-button>
+                        <p-button (click)="showDialogEdit(student)" icon="pi pi-pencil" [rounded]="true" [raised]="true"  severity="info" class="mx-3"></p-button>
+                        <p-button (click)="deleteStudent(student.idEtudiant)" icon="pi pi-trash" [rounded]="true" [raised]="true"  severity="danger"></p-button>
+                    </td>
+                </tr>
+
+
+            <!-- view modal -->
+            @if(visible_view){
+                <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="visible_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                    <div class="grid grid-cols-2">
+                        <div class="flex justify-center text-left">
+                            <div>
+                                <span class="block mb-3 font-semibold">Nom</span>
+                                <span class="block mb-3 font-semibold">Prénom</span>
+                                <span class="block mb-3 font-semibold">CNE</span>
+                                <span class="block mb-3 font-semibold">Email</span>
+                                <span class="block mb-3 font-semibold">Numéro de téléphone</span>
+                                <span class="block mb-3 font-semibold">spécialité</span>
+                                <span class="block mb-3 font-semibold">Filière</span>
+                                <span class="block mb-3 font-semibold">niveau d'étude</span>
+                                <span class="block mb-3 font-semibold">date de naissence</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-center text-left">
+                            <div>
+                                <span class="block mb-3">{{selectedStudent.utilisateur.nom}}</span>
+                                <span class="block mb-3">{{selectedStudent.utilisateur.prenom}}</span>
+                                <span class="block mb-3">{{selectedStudent.cne}}</span>
+                                <span class="block mb-3">{{selectedStudent.utilisateur.email}}</span>
+                                <span class="block mb-3">{{selectedStudent.utilisateur.numTel}}</span>
+                                <span class="block mb-3">{{selectedStudent.specialite}}</span>
+                                <span class="block mb-3">{{selectedStudent.filiere}}</span>
+                                <span class="block mb-3">{{selectedStudent.niveauEtude}}</span>
+                                <span class="block mb-3">{{selectedStudent.dateNaissance}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </p-dialog>
+
+                <!-- edit modal -->
+            }@else if(visible_edit){
+                <p-dialog class="text-center" header="modifier"  [modal]="true" [(visible)]="visible_edit" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                        <!-- edit form -->
+                        <div class="flex justify-center text-left ">
+                            <form [formGroup]="formGroup" class="w-full" (ngSubmit)="onSubmit($event)">
+                                    <div class = "grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 w-full">
+
+                                        <!-- Nom -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">nom</label>
+                                            <input type="text" formControlName = "nom" name="nom" [value]="selectedStudent.nom"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("nom")){
+                                                <span class="error">{{getError("nom")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- Prenom -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">prenom</label>
+                                            <input type="text" formControlName = "prenom" name="prenom"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("prenom")){
+                                                <span class="error">{{getError("prenom")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- CNE -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">CNE</label>
+                                            <input type="text" formControlName = "cne" name="cne"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("cne")){
+                                                <span class="error">{{getError("cne")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- Email -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">email</label>
+                                            <input type="text" formControlName = "email" name="email"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("email")){
+                                                <span class="error">{{getError("email")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- TEL -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">numero de telephone</label>
+                                            <input type="tel" formControlName = "numTel" name="numTel"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("numTel")){
+                                                <span class="error">{{getError("numTel")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- Filière-->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">Filière</label>
+                                            <input type="text" formControlName = "filiere" name="filiere"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("filiere")){
+                                                <span class="error">{{getError("filiere")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- niveau d'étude -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">niveau d'étude</label>
+                                            <input type="text" formControlName = "niveauEtude" name="niveauEtude"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("niveauEtude")){
+                                                <span class="error">{{getError("niveauEtude")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- specialite -->
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium" for="">spécialité</label>
+                                            <input type="text" formControlName = "specialite" name="specialite"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("specialite")){
+                                                <span class="error">{{getError("specialite")}}</span>
+                                            }
+                                        </div>
+
+                                        <!-- Date de naissance -->
+                                        <div>
+
+                                            <label class="block mb-2 text-sm font-medium" for="">date de Naissance</label>
+                                            <input type="date" formControlName = "dateNaissance" name="dateNaissance"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                            @if(getError("dateNaissance")){
+                                                <span class="error">{{getError("dateNaissance")}}</span>
+                                            }
+                                        </div>
+
+                                    </div>
+                                    <button type="submit" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white" >modifier</button>
+                            </form>
+                        </div>
+
+                </p-dialog>
+            }
+
+        </tbody>
+    </table>
+
+    <!-- delete confirmation modal -->
+    <p-toast></p-toast>
+    <p-confirmDialog #cd>
+        <ng-template pTemplate="headless" let-message>
+            <div class="flex flex-col gap-4 items-center p-5  rounded-lg bg-white">
+                <div class="rounded-full bg-red-600 inline-flex justify-center items-center h-24 w-24">
+                    <i class="pi pi-question text-5xl text-white"></i>
+                </div>
+
+                <span class="font-bold text-2xl block mb-2 mt-4">
+                    {{ message.header }}
+                </span>
+
+                <p class="mb-0">{{ message.message }}</p>
+
+                <div class=" w-full flex items-center gap-2 mt-4">
+                    <button
+                        pButton
+                        label="supprimer"
+                        (click)="cd.accept()"
+                        size="small"
+                        [outlined]="true"
+                        severity="danger"
+                        class="w-32">
+                    </button>
+                    <button
+                        pButton
+                        label="Annuler"
+                        (click)="cd.reject()"
+                        size="small"
+                        class="w-32 ">
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+    </p-confirmDialog>
+
+     <!-- start pagination -->
+     <div class="pagination text-center mt-4">
+        <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="précédent"
+            nextLabel="suivant"
+            ></pagination-controls>
+    </div>
+    <!-- end pagination -->
+</div>
+

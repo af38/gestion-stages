@@ -1,0 +1,45 @@
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-full pt-16 overflow-y-scroll">
+
+    <!-- start account-creation-form -->
+    <section class="p-4 mt-4">
+        <div class="flex items-center justify-start gap-4 mt-3 mb-8">
+            <i class="pi pi-users text-gray-500 shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">Comptes</h2>
+        </div>
+        <p-accordion [activeIndex]="0" class="bg-white border border-gray-300">
+            <p-accordionTab [style]="{'background':'white'}" header="formulaire de création de comptes">
+                <div class="rounded-xl bg-white p-4 mt-4">
+                    <h1 class="mb-2 text-3xl">créer des comptes</h1>
+                    <select [(ngModel)]="role" name="role" class="w-full sm:w-4/12  mb-3 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                        <option value="student" name="student"  selected>étudiant</option>
+                        <option value="teacher" name="teacher" >enseignant</option>
+                        <option value="resp" name="resp">responsable administratif</option>
+                    </select>
+
+                    <div *ngIf="role === 'student'">
+                        <app-student-form></app-student-form>
+                    </div>
+                    <div *ngIf="role === 'teacher'">
+                        <app-teacher-form></app-teacher-form>
+                    </div>
+                    <div *ngIf="role === 'resp'">
+                        <app-resp-form></app-resp-form>
+                    </div>
+                </div>
+            </p-accordionTab>
+        </p-accordion>
+    </section>
+    <!-- end account-creation-form -->
+
+    <app-accounts-crud></app-accounts-crud>
+</main>
+<!-- end main -->

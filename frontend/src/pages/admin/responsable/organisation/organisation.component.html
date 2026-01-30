@@ -1,0 +1,392 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-full pt-16 overflow-y-scroll">
+
+    <!-- start organisations-creation-form -->
+    <section class="py-4 px-8 mt-4 md:h-full">
+        <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+            <i class="pi pi-building-columns text-gray-500 border border-solid border-black  shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">organismes</h2>
+        </div>
+        <div class="rounded-xl bg-white mt-4">
+            <p-accordion [activeIndex]="0">
+                <p-accordionTab header="formulaire de création d'organisme">
+                    <form (ngSubmit)="onSubmit($event, 'create')"  [formGroup]="formGroup" class="w-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+
+                            <!-- type organisme-->
+                            <div class="w-full">
+                                    <label class="block mb-2 text-sm font-medium">type d'organisme</label>
+                                    <select formControlName = "typeOrganisme" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+                                        <option value="Entreprise privée">Entreprise privée</option>
+                                        <option value="Organisation gouvernementale"> Organisation gouvernementale</option>
+                                        <option value="Organisation non gouvernementale (ONG)"> Organisation non gouvernementale (ONG)</option>
+                                        <option value="Institution académique"> Institution académique</option>
+                                        <option value="Organisation internationale"> Organisation internationale</option>
+                                        <option value="Entreprise multinationale">Entreprise multinationale</option>
+                                        <option value="Association professionnelle">Association professionnelle</option>
+                                        <option value="Média et communication">Média et communication</option>
+                                    </select>
+                                    @if(getError("typeOrganisme")){
+                                        <span class="error">{{getError("typeOrganisme")}}</span>
+                                    }
+                            </div>
+
+                            <!-- nom organisme-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nom de l'organisme</label>
+                                <input type="text" formControlName = "nomOrganisme" name="nomOrganisme"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nomOrganisme")){
+                                    <span class="error">{{getError("nomOrganisme")}}</span>
+                                }
+                            </div>
+
+                             <!-- nom contact-->
+                             <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nom du contact</label>
+                                <input type="text" formControlName = "nomContact" name="nomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nomContact")){
+                                    <span class="error">{{getError("nomContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- prenom contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">prénom du contact</label>
+                                <input type="text" formControlName = "prenomContact" name="prenomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("prenomContact")){
+                                    <span class="error">{{getError("prenomContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- tel contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">téléphone du contact</label>
+                                <input type="tel" formControlName = "telContact" name="telContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("telContact")){
+                                    <span class="error">{{getError("telContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- email contact-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">email</label>
+                                <input type="email" formControlName = "emailContact" name="emailContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("emailContact")){
+                                    <span class="error">{{getError("emailContact")}}</span>
+                                }
+                            </div>
+
+                            <!-- ville-->
+                            <div class="w-full">
+                            <label class="block mb-2 text-sm font-medium" for="">ville</label>
+                            <select formControlName = "ville" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                <option *ngFor="let city of villes" [value]="city">{{city}}</option>
+                            </select>
+                            @if(getError("ville")){
+                                <span class="error">{{getError("ville")}}</span>
+                            }
+                            </div>
+
+                             <!-- rue -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">rue</label>
+                                <input type="text" formControlName = "rue" name="rue"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("rue")){
+                                    <span class="error">{{getError("rue")}}</span>
+                                }
+                            </div>
+
+                            <!-- region-->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">region</label>
+                                <select formControlName = "region" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option *ngFor="let region of regions" [value]="region">{{region}}</option>
+                                </select>
+                                @if(getError("region")){
+                                    <span class="error">{{getError("region")}}</span>
+                                }
+                            </div>
+
+                        </div>
+                        <button class="w-full mt-5 rounded-md bg-blue-600 text-center py-3 text-white" >créer</button>
+                    </form>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+    </section>
+    <!-- end organisations-creation-form -->
+
+
+    <!-- start organisations-crud  -->
+    <section class="py-4 px-8 md:h-full">
+        <div class="relative overflow-x-auto rounded-lg min-h-96">
+            <div class="flex items-center justify-between mb-4">
+                <select [(ngModel)]="type" (ngModelChange)="getAllOrganismes()" class="block p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+                    <option value="" selected>Type organisme </option>
+                    <option value="Entreprise privée">Entreprise privée </option>
+                    <option value="Organisation gouvernementale"> Organisation gouvernementale </option>
+                    <option value="Organisation non gouvernementale (ONG)"> Organisation non gouvernementale (ONG) </option>
+                    <option value="Institution académique"> Institution académique</option>
+                    <option value="Organisation internationale"> Organisation internationale </option>
+                    <option value="Entreprise multinationale">Entreprise multinationale </option>
+                    <option value="Association professionnelle">Association professionnelle</option>
+                    <option value="Média et communication">Média et communication</option>
+                </select>
+                <input [(ngModel)]="query" (ngModelChange)="getAllOrganismes()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+
+            </div>
+            <table class="w-full text-sm text-left text-black shadow-md">
+                <thead class="text-xs uppercase bg-gray-200">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">nom</th>
+                        <th scope="col" class="px-6 py-3">type</th>
+                        <th scope="col" class="px-6 py-3">tel</th>
+                        <th scope="col" class="px-6 py-3">email</th>
+                        <th scope="col" class="px-6 py-3">contact</th>
+                        <th scope="col" class="px-6 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let organisation of organisations | paginate: { itemsPerPage: 4, currentPage: page, totalItems: totalLength }"  class="bg-white border-b">
+                        <td class="px-6 py-4">{{organisation.nomOrganisme}}</td>
+                        <td class="px-6 py-4">{{organisation.typeOrganisme}}</td>
+                        <td class="px-6 py-4">{{organisation.telContact}}</td>
+                        <td class="px-6 py-4">{{organisation.emailContact}}</td>
+                        <td class="px-6 py-4">{{organisation.nomContact + " " + organisation.prenomContact}}</td>
+                        <td class="px-6 py-4">
+                            <p-button (click)="showDialogView(organisation)" icon="pi pi-eye" [rounded]="true" [raised]="true"></p-button>
+                            <p-button (click)="showDialogEdit(organisation)" icon="pi pi-pencil" [rounded]="true" [raised]="true"  severity="info" class="mx-3"></p-button>
+                            <p-button (click)="delete(organisation.idOrganisme)" icon="pi pi-trash" [rounded]="true" [raised]="true"  severity="danger"></p-button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <!-- start pagination -->
+        <div class="pagination text-center mt-4">
+            <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="précédent"
+            nextLabel="suivant"
+            ></pagination-controls>
+        </div>
+        <!-- end pagination -->
+    </section>
+
+<!-- view modal -->
+@if(selectedOrganisme != null && visible_view){
+    <p-dialog class="text-center" header="Voir"  [modal]="true" [(visible)]="visible_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+                <!-- information organisme -->
+                <div class="text-black pb-2">
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">nom de l'organisme</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.nomOrganisme}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">nom du contac</dt>
+                        <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedOrganisme.nomContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">prénom du contact</dt>
+                        <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.prenomContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">type de l'organisme</dt>
+                        <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedOrganisme.typeOrganisme}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">téléphone du contact</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.telContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">email</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.emailContact}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">ville</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.adresse.ville}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">rue</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.adresse.rue}}</dd>
+                    </div>
+
+                    <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium">region</dt>
+                        <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedOrganisme.adresse.region}}</dd>
+                    </div>
+
+                </div>
+    </p-dialog>
+<!-- edit modal -->
+}@else if(selectedOrganisme != null && visible_edit){
+    <p-dialog class="text-center" header="Modifier"  [modal]="true" [(visible)]="visible_edit" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+               <!-- edit form -->
+            <div class="flex justify-center text-left ">
+                <form [formGroup]="formGroup" class="w-full" (ngSubmit)="onSubmit($event, 'edit')" action="#" method="post">
+                    <div class = "grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 w-full">
+
+                        <!-- type organisme-->
+                        <div class="w-full">
+                            <label class="block mb-2 text-sm font-medium" for="">typeOrganisme</label>
+                            <select formControlName = "typeOrganisme" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                <option value="Entreprise privée">Entreprise privée </option>
+                                <option value="Organisation gouvernementale"> Organisation gouvernementale</option>
+                                <option value="Organisation non gouvernementale (ONG) "> Organisation non gouvernementale (ONG) </option>
+                                <option value="Institution académiques"> Institution académique</option>
+                                <option value="Organisation internationales"> Organisation internationale </option>
+                                <option value="Entreprise multinationales">Entreprise multinationale </option>
+                                <option value="Association professionnelles">Association professionnelle</option>
+                                <option value="Média et communication">Média et communication  </option>
+                            </select>
+                            @if(getError("typeOrganisme")){
+                                <span class="error">{{getError("typeOrganisme")}}</span>
+                            }
+                        </div>
+
+                        <!-- nom organisme-->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">nomOrganisme</label>
+                            <input type="text" formControlName = "nomOrganisme" name="nomOrganisme"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("nomOrganisme")){
+                                <span class="error">{{getError("nomOrganisme")}}</span>
+                            }
+                        </div>
+
+                        <!-- nom contact-->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">nomContact</label>
+                            <input type="text" formControlName = "nomContact" name="nomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("nomContact")){
+                                <span class="error">{{getError("nomContact")}}</span>
+                            }
+                        </div>
+
+                        <!-- prenom contact-->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">prenomContact</label>
+                            <input type="text" formControlName = "prenomContact" name="prenomContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("prenomContact")){
+                                <span class="error">{{getError("prenomContact")}}</span>
+                            }
+                        </div>
+
+                       <!-- tel contact-->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">telContact</label>
+                            <input type="tel" formControlName = "telContact" name="telContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("telContact")){
+                                <span class="error">{{getError("telContact")}}</span>
+                            }
+                        </div>
+
+                         <!-- email contact-->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">emailContact</label>
+                            <input type="email" formControlName = "emailContact" name="emailContact"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("emailContact")){
+                                <span class="error">{{getError("emailContact")}}</span>
+                            }
+                        </div>
+
+                        <!-- ville-->
+                        <div class="w-full">
+                            <label class="block mb-2 text-sm font-medium" for="">ville</label>
+                            <select formControlName = "ville" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                <option *ngFor="let city of villes" [value]="city">{{city}}</option>
+                            </select>
+                            @if(getError("ville")){
+                                <span class="error">{{getError("ville")}}</span>
+                            }
+                        </div>
+
+                        <!-- rue -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">rue</label>
+                            <input type="text" formControlName = "rue" name="rue"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("rue")){
+                                <span class="error">{{getError("rue")}}</span>
+                            }
+                        </div>
+
+                        <!-- region-->
+                        <div class="w-full">
+                            <label class="block mb-2 text-sm font-medium" for="">region</label>
+                            <select formControlName = "region" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                <option *ngFor="let region of regions" [value]="region">{{region}}</option>
+                            </select>
+                            @if(getError("region")){
+                                <span class="error">{{getError("region")}}</span>
+                            }
+                        </div>
+
+
+
+
+                    </div>
+                        <button type="submit" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white" >modifier</button>
+                </form>
+            </div>
+
+    </p-dialog>
+}
+<!-- delete confirmation modal -->
+<p-toast></p-toast>
+<p-confirmDialog #cd>
+    <ng-template pTemplate="headless" let-message>
+        <div class="flex flex-col gap-4 items-center p-5  rounded-lg bg-white">
+            <div class="rounded-full bg-red-600 inline-flex justify-center items-center h-24 w-24">
+                <i class="pi pi-question text-5xl text-white"></i>
+            </div>
+
+            <span class="font-bold text-2xl block mb-2 mt-4">
+                {{ message.header }}
+            </span>
+
+            <p class="mb-0">{{ message.message }}</p>
+
+            <div class=" w-full flex items-center gap-2 mt-4">
+                <button
+                    pButton
+                    label="supprimer"
+                    (click)="cd.accept()"
+                    size="small"
+                    [outlined]="true"
+                    severity="danger"
+                    class="w-32">
+                </button>
+                <button
+                    pButton
+                    label="Annuler"
+                    (click)="cd.reject()"
+                    size="small"
+                    class="w-32 ">
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmDialog>
+
+<!-- end organisations-crud  -->
+</main>
+<!-- end main -->
+
+

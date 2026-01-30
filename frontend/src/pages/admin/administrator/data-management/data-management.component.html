@@ -1,0 +1,48 @@
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen" ></app-nav-bar>
+<!-- end top nav -->
+
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-dvh pt-16 overflow-y-scroll">
+
+    <!-- start account-creation-form -->
+    <section class="p-4 h-full">
+        <!-- start title of page -->
+        <div class="flex items-center justify-start gap-4 mt-3 mb-8">
+            <i class="pi pi-database text-gray-500 shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">Gestion des données</h2>
+        </div>
+        <!-- end title of page -->
+
+        <div class="p-4 mt-4">
+            <div class="rounded-xl p-4 h-fit grid grid-cols-1 gap-y-6">
+                <div class="  p-4 rounded-lg  border border-gray-300 bg-white">
+                    <h3 class="font-medium mb-4">restaurer les donnes</h3>
+                    <div class="flex justify-start items-center gap-4 ">
+                        <select [(ngModel)]="table"  class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5">
+                            <option value="" selected>choisir une table</option>
+                            <option *ngFor="let table of tables" [value]="table"  selected>{{table}}</option>
+                        </select>
+
+                        <input (change)="onFileChange($event)" class="block w-1/3 p-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none" type="file">
+                        <p-button (click)="import()" label="importer" icon="pi pi-upload" iconPos="right" size="small"></p-button>
+                    </div>
+
+                </div>
+                <div class="p-4 rounded-lg border border-gray-300 bg-white">
+                    <h3 class="mb-4 font-medium">sauvgarder les donnes</h3>
+                    <p-button (click)="exportData()" label="télécharger" icon="pi pi-download" iconPos="right" size="small"></p-button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- end account-creation-form -->
+</main>
+<!-- end main -->
+<p-toast></p-toast>

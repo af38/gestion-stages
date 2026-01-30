@@ -1,0 +1,373 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar>
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="bg-gray-100 duration-500 w-full h-full pt-16 overflow-y-scroll">
+
+    <!-- start stages-creation-form -->
+    <section class="py-4 px-8 mt-4 md:h-full">
+        <div class="flex items-center justify-start gap-4 p-4 mt-3 mb-4">
+            <i class="pi pi-briefcase text-gray-500 border border-solid border-black  shadow-lg rounded-lg text-3xl p-2 "></i>
+            <h2 class="mb-2 text-3xl">Stages</h2>
+        </div>
+        <div class="rounded-xl bg-white mt-4">
+            <p-accordion [activeIndex]="0">
+                <p-accordionTab header="formulaire de création de stage">
+                    <form method="post" action="#" (ngSubmit)="create($event)"  [formGroup]="formGroup" class="w-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+                            <!-- organisme -->
+                                <div class="w-full">
+                                    <label class="block mb-2 text-sm font-medium" for="">organisme</label>
+                                    <select formControlName = "idOrganisme" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+                                        <option *ngFor="let organisation of organisations" [value]="organisation.idOrganisme">{{organisation.nomOrganisme}}</option>
+                                    </select>
+                                    @if(getError("idOrganisme")){
+                                        <span class="error">{{getError("idOrganisme")}}</span>
+                                    }
+                                </div>
+
+                                <!-- intitule -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Intitulé</label>
+                                    <input type="text" formControlName = "intitule" name="intitule"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("intitule")){
+                                        <span class="error">{{getError("intitule")}}</span>
+                                    }
+                                </div>
+
+                                <!-- dateDebut -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Date de début</label>
+                                    <input type="date" formControlName = "dateDebut" name="dateDebut"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("dateDebut")){
+                                        <span class="error">{{getError("dateDebut")}}</span>
+                                    }
+                                </div>
+
+                                <!-- dateFin -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">Date de fin</label>
+                                    <input type="date" formControlName = "dateFin" name="dateFin"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("dateFin")){
+                                        <span class="error">{{getError("dateFin")}}</span>
+                                    }
+                                </div>
+
+                                <!-- descriptif-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">descriptif</label>
+                                    <input type="text" formControlName = "descriptif" name="descriptif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("descriptif")){
+                                        <span class="error">{{getError("descriptif")}}</span>
+                                    }
+                                </div>
+
+                                <!-- objectif-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">objectif</label>
+                                    <input type="text" formControlName = "objectif" name="objectif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("objectif")){
+                                        <span class="error">{{getError("objectif")}}</span>
+                                    }
+                                </div>
+
+                                <!-- specialite -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">specialite</label>
+                                    <input type="text" formControlName = "specialite" name="specialite"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("specialite")){
+                                        <span class="error">{{getError("specialite")}}</span>
+                                    }
+                                </div>
+
+                                <!-- nbreStagaires-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">nombre de stagaires</label>
+                                    <input type="number" formControlName = "nbreStagaires" name="nbreStagaires"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("nbreStagaires")){
+                                        <span class="error">{{getError("nbreStagaires")}}</span>
+                                    }
+                                </div>
+
+                        </div>
+                        <button type="submit" class="w-full mt-5 rounded-md bg-blue-600 text-center py-3 text-white" >créer</button>
+                    </form>
+                </p-accordionTab>
+
+                <!-- accepted stages -->
+                <p-accordionTab header="stages déposés acceptés.">
+                    <table class="w-full text-sm text-left text-black shadow-md">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">étudiant</th>
+                                <th scope="col" class="px-6 py-3">stage</th>
+                                <th scope="col" class="px-6 py-3">organisme</th>
+                                <th scope="col" class="px-6 py-3">date deposee</th>
+                                <th scope="col" class="px-6 py-3">Enseignant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr *ngFor="let stage of acceptedStages | paginate: { itemsPerPage: 6, currentPage: page, totalItems: totalLength }"  class="bg-white border-b">
+                                <td class="px-6 py-4">{{stage.depose.etudiant.utilisateur.nom + ' ' + stage.depose.etudiant.utilisateur.prenom}}</td>
+                                <td class="px-6 py-4">{{stage.intitule}}</td>
+                                <td class="px-6 py-4">{{stage.organisme.nomOrganisme}}</td>
+                                <td class="px-6 py-4">{{stage.depose.dateDepose}}</td>
+                                <td class="px-6 py-4">
+                                    <p-button (click)="showAffectaionDialog(stage)" label="choisir" icon="pi pi-user" [rounded]="true" size="small" [raised]="true" title="choisir enseignant"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+
+        <div class="rounded-xl bg-white mt-4">
+
+        </div>
+    </section>
+    <!-- end stages-creation-form -->
+
+    <!-- view modal -->
+    @if(selectedStage != null && visible_view){
+        <p-dialog class="text-center" header="voir"  [modal]="true" [(visible)]="visible_view" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+            <!-- information stage -->
+            <div class="text-black pb-2">
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">intitulé</dt>
+                    <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStage.intitule}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">date de début</dt>
+                    <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedStage.dateDebut}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">date de fin</dt>
+                    <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedStage.dateFin}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">nombre de stagiaires</dt>
+                    <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedStage.nbreStagaires}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">objectif</dt>
+                    <dd class="mt-1 text-sm  text-left sm:mt-0 sm:col-span-2">{{selectedStage.objectif}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">descriptif</dt>
+                    <dd class="mt-1 text-sm text-left  sm:mt-0 sm:col-span-2">{{selectedStage.descriptif}}</dd>
+                </div>
+
+                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium">spécialité</dt>
+                    <dd class="mt-1 text-sm text-left sm:mt-0 sm:col-span-2">{{selectedStage.specialite}}</dd>
+                </div>
+
+            </div>
+        </p-dialog>
+
+    <!-- edit modal -->
+    }@else if(selectedStage != null && visible_edit){
+        <p-dialog class="text-center" header="modifier"  [modal]="true" [(visible)]="visible_edit" [style]="{width: '40vw'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+            <!-- edit form -->
+            <div class="flex justify-center text-left ">
+                <form [formGroup]="editFormGroup" class="w-full" (ngSubmit)="edit($event)">
+                    <div class = "grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 w-full">
+                            <!-- organisme -->
+                            <div class="w-full">
+                                <label class="block mb-2 text-sm font-medium" for="">organisation</label>
+                                <select formControlName = "idOrganisme" class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text" name="" id="">
+                                    <option *ngFor="let organisation of organisations" [value]="organisation.idOrganisme">{{organisation.nomOrganisme}}</option>
+                                </select>
+                                @if(getError("idOrganisme")){
+                                    <span class="error">{{getError("idOrganisme")}}</span>
+                                }
+                            </div>
+
+                        <!-- intitule -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium" for="">intitule</label>
+                            <input type="text" formControlName = "intitule" name="intitule"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            @if(getError("intitule")){
+                                <span class="error">{{getError("intitule")}}</span>
+                            }
+                        </div>
+
+                        <!-- dateDebut -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">dateDebut</label>
+                                    <input type="text" formControlName = "dateDebut" name="dateDebut"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("dateDebut")){
+                                        <span class="error">{{getError("dateDebut")}}</span>
+                                    }
+                            </div>
+
+                            <!-- dateFin -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">dateFin</label>
+                                <input type="text" formControlName = "dateFin" name="dateFin"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("dateFin")){
+                                    <span class="error">{{getError("dateFin")}}</span>
+                                }
+                            </div>
+
+                            <!-- descriptif-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">descriptif</label>
+                                <input type="text" formControlName = "descriptif" name="descriptif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("descriptif")){
+                                    <span class="error">{{getError("descriptif")}}</span>
+                                }
+                            </div>
+
+                                <!-- objectif-->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium" for="">objectif</label>
+                                    <input type="text" formControlName = "objectif" name="objectif"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    @if(getError("objectif")){
+                                        <span class="error">{{getError("objectif")}}</span>
+                                    }
+                                </div>
+
+                            <!-- specialite -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">specialite</label>
+                                <input type="text" formControlName = "specialite" name="specialite"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("specialite")){
+                                    <span class="error">{{getError("specialite")}}</span>
+                                }
+                            </div>
+
+                            <!-- nbreStagaires-->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium" for="">nombre de stagaires</label>
+                                <input type="number" formControlName = "nbreStagaires" name="nbreStagaires"  class="block w-full p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                @if(getError("nbreStagaires")){
+                                    <span class="error">{{getError("nbreStagaires")}}</span>
+                                }
+                            </div>
+                        </div>
+                            <button type="submit" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white" >modifier</button>
+                </form>
+            </div>
+
+         </p-dialog>
+    }
+
+    <!-- pick teacher modal -->
+    <p-dialog class="text-center" header="choisir"  [modal]="true" [(visible)]="visible_affectation" [style]="{width: '40vh'}" [draggable]="false" [resizable]="false" [breakpoints]="{ '960px': '75vw' }">
+        <select [(ngModel)]="idEnseignant" (ngModelChange)="getAllOrganismes()" class="block p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" type="text">
+            <option *ngFor="let teacher of teachers" [value]="teacher.idEnseignant">{{teacher.utilisateur.nom + ' ' + teacher.utilisateur.prenom}}</option>
+        </select>
+        <button (click)="affecter()" class="w-full mt-5 rounded-md bg-slate-600 text-center py-3 text-white" >affecter</button>
+
+    </p-dialog>
+
+
+    <!-- start stages-crud  -->
+    <section class="bg-white py-4 px-8 md:h-full">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <select [(ngModel)]="search_organisme" (ngModelChange)="getAllStages()" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-4/12 p-2.5" type="text">
+                    <option [value]="0">organisme</option>
+                    <option *ngFor="let organisation of organisations" [value]="organisation.idOrganisme">{{organisation.nomOrganisme}}</option>
+                </select>
+                <input [(ngModel)]="query" (ngModelChange)="getAllStages()" type="search" class="block w-1/3 p-2.5 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+            </div>
+        </div>
+        <div class="relative overflow-x-auto mt-4 rounded-lg min-h-96">
+            <table class="w-full text-sm text-left rtl:text-right text-black shadow-md">
+                <thead class="text-xs uppercase bg-gray-200">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">intitule</th>
+                        <th scope="col" class="px-6 py-3">organisme</th>
+                        <th scope="col" class="px-6 py-3">date de debut</th>
+                        <th scope="col" class="px-6 py-3">date de fin</th>
+                        <th scope="col" class="px-6 py-3">nombre des satagaires</th>
+                        <th scope="col" class="px-6 py-3">specialite</th>
+                        <th scope="col" class="px-6 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let stage of stages | paginate: { itemsPerPage: 6, currentPage: page, totalItems: totalLength }"  class="bg-white border-b">
+                        <td class="px-6 py-4">{{trimText(stage.intitule)}}</td>
+                        <td class="px-6 py-4">{{trimText(stage.organisme.nomOrganisme)}}</td>
+                        <td class="px-6 py-4">{{stage.dateDebut}}</td>
+                        <td class="px-6 py-4">{{stage.dateFin}}</td>
+                        <td class="px-6 py-4">{{stage.nbreStagaires}}</td>
+                        <td class="px-6 py-4">{{stage.specialite}}</td>
+                        <td class="px-6 py-4">
+                            <p-button (click)="showDialogView(stage)" icon="pi pi-eye" [rounded]="true" [raised]="true"></p-button>
+                            <p-button (click)="showDialogEdit(stage)" icon="pi pi-pencil" [rounded]="true" [raised]="true"  severity="info" class="mx-3"></p-button>
+                            <p-button (click)="deleteStage(stage.idStage)" icon="pi pi-trash" [rounded]="true" [raised]="true"  severity="danger"></p-button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <!-- start pagination -->
+        <div class="pagination text-center mt-4">
+            <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="précédent"
+            nextLabel="suivant"
+            ></pagination-controls>
+        </div>
+        <!-- end pagination -->
+    </section>
+    <!-- end stages-crud  -->
+
+    <!-- delete confirmation modal -->
+    <p-toast></p-toast>
+    <p-confirmDialog #cd>
+        <ng-template pTemplate="headless" let-message>
+            <div class="flex flex-col gap-4 items-center p-5  rounded-lg bg-white">
+                <div class="rounded-full bg-red-600 inline-flex justify-center items-center h-24 w-24">
+                    <i class="pi pi-question text-5xl text-white"></i>
+                </div>
+
+                <span class="font-bold text-2xl block mb-2 mt-4">
+                    {{ message.header }}
+                </span>
+
+                <p class="mb-0">{{ message.message }}</p>
+
+                <div class=" w-full flex items-center gap-2 mt-4">
+                    <button
+                        pButton
+                        label="supprimer"
+                        (click)="cd.accept()"
+                        size="small"
+                        [outlined]="true"
+                        severity="danger"
+                        class="w-32">
+                    </button>
+                    <button
+                        pButton
+                        label="Annuler"
+                        (click)="cd.reject()"
+                        size="small"
+                        class="w-32 ">
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+    </p-confirmDialog>
+
+</main>
+<!-- end main -->
+

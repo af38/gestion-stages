@@ -1,0 +1,58 @@
+<!-- start min top nav -->
+<app-nav-bar (toggle)="isOpen = !isOpen"></app-nav-bar>
+<!-- end min top nav -->
+
+<!-- start side bar -->
+<app-sidebar [isOpen] = "isOpen" [items] = "sidebarItems"></app-sidebar >
+<!-- end sidebar -->
+
+<!-- start main -->
+<main [ngClass]="{'md:ml-64 md:w-[calc(100%-256px)]': isOpen, 'md:ml-0': !isOpen}" class="duration-500 w-full h-full pt-16 overflow-y-scroll">
+
+
+    <!-- start rapports list -->
+    <section class="bg-white p-4 max-h-fit">
+        <div class="flex flex-col justify-start h-96 relative overflow-x-auto mt-4 rounded-lg">
+            <div class="flex justify-between items-center">
+                <input [(ngModel)]="query" (ngModelChange)="getAllRapports()" type="search" class="block w-1/3 p-2.5 mb-4 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherch">
+                <input [(ngModel)]="keyword" (ngModelChange)="getAllRapports()" type="search" class="block w-1/3 p-2.5 mb-4 text-sm border-gray-300 border rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="recherche par mot-clé">
+            </div>
+            <table class="w-full text-sm text-leftt text-black shadow-lg">
+                <thead class="text-xs text-left uppercase bg-gray-200">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">titre</th>
+                        <th scope="col" class="px-6 py-3">filier</th>
+                        <th scope="col" class="px-6 py-3">specialite</th>
+                        <th scope="col" class="px-6 py-3">annee</th>
+                        <th scope="col" class="px-6 py-3">lien</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--  -->
+                    <tr *ngFor="let rapport of rapports | paginate: { itemsPerPage: 5, currentPage: page, totalItems: totalLength }" class="bg-white border-b">
+                        <td class="px-6 py-4">{{rapport.titre}}</td>
+                        <td class="px-6 py-4">{{rapport.filiere}}</td>
+                        <td class="px-6 py-4">{{rapport.specialite}}</td>
+                        <td class="px-6 py-4">{{rapport.annee}}</td>
+                        <td class="px-6 py-4"><a [href]="rapport.lien">ouvrire</a></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <!-- start pagination -->
+        <div class="pagination text-center mt-4">
+            <pagination-controls
+                (pageChange)="page = $event"
+                previousLabel="précédent"
+                nextLabel="suivant">
+            </pagination-controls>
+        </div>
+        <!-- end pagination -->
+    </section>
+    <!-- end rapport list -->
+
+</main>
+<!-- end main -->
+
+
